@@ -18,6 +18,15 @@ repos:
     hooks:
       - id: isort
         name: isort (python)
+        args:
+          [
+            "--profile",
+            "black",
+            "--filter-files",
+            "--skip-gitignore",
+            "--line-length",
+            "88",
+          ]
   - repo: https://github.com/pycqa/flake8
     # docs: https://flake8.pycqa.org/en/latest/user/using-hooks.html?highlight=commit
     rev: "4.0.1"
