@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools >= 45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["annoframe"]
+
+[tool.mypy]
+files = 'annoframe/**/*.py'
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = 'annoframe.*'
+
+[tool.black]
+line-length = 88
+include = '^/annoframe.*\.py' # all .py files
+extend-exclude = '''
+^/setup.py
+|^/docs
+|^/dist
+'''

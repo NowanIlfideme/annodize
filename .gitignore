@@ -1,0 +1,13 @@
+# Editors
+/.vscode
+/.idea
+
+# Build, compilation and temp files
+*__pycache__*
+*.pyc
+
+*.egg-info
+build/*
+dist/*
+
+conda*requirements.txt

@@ -1,0 +1,9 @@
+name: annoframe
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - pyspark=3.2.0 # easier for local development
+  - pip:
+      - "-e .[dev,pandas,pyspark]"
