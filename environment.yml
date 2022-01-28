@@ -4,6 +4,10 @@ channels:
 dependencies:
   - python=3.9
   - pip
-  - pyspark=3.2.0 # easier for local development
+  # might be faster
+  - pandas=1.4
+  - pyspark=3.2
+  # for examples?
+  - jupyter
   - pip:
       - "-e .[dev,pandas,pyspark,docs]"
