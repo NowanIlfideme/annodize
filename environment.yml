@@ -6,4 +6,4 @@ dependencies:
   - pip
   - pyspark=3.2.0 # easier for local development
   - pip:
-      - "-e .[dev,pandas,pyspark]"
+      - "-e .[dev,pandas,pyspark,docs]"
