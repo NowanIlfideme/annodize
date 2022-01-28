@@ -10,4 +10,5 @@ __all__ = ["Annotated", "__version__"]
 
 from typing import Annotated
 
+from .basic import Schema, check_schema
 from .version import __version__
