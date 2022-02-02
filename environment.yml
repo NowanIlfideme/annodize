@@ -11,3 +11,6 @@ dependencies:
   - jupyter
   - pip:
       - "-e .[dev,pandas,pyspark,docs]"
+      - beartype
+      - typeguard
+      - runtype

@@ -1,4 +1,6 @@
-from annoframe.typing import *
+"""Basic ideas here."""
+
+from .typing import *
 
 P = ParamSpec("P")
 T = TypeVar("T")
