@@ -1,4 +1,4 @@
-name: annoframe
+name: annodize
 channels:
   - conda-forge
 dependencies:

@@ -3,19 +3,19 @@ requires = ["setuptools >= 45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-testpaths = ["annoframe"]
+testpaths = ["annodize"]
 
 [tool.mypy]
 python_version = "3.10"
-files = 'annoframe/**/*.py'
+files = 'annodize/**/*.py'
 warn_unused_configs = true
 
 [[tool.mypy.overrides]]
-module = 'annoframe.*'
+module = 'annodize.*'
 
 [tool.black]
 line-length = 88
-include = '^/annoframe.*\.py' # all .py files
+include = '^/annodize.*\.py' # all .py files
 extend-exclude = '''
 ^/setup.py
 |^/docs
@@ -25,5 +25,5 @@ extend-exclude = '''
 [tool.isort]
 profile = "black"
 skip_gitignore = true
-src_paths = ["annoframe"]
+src_paths = ["annodize"]
 line_length = 88

@@ -3,6 +3,6 @@
 
 def test_pass():
     """Fake test that passes."""
-    from annoframe import __version__
+    from annodize import __version__
 
     assert True

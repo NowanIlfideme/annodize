@@ -10,7 +10,7 @@ import pandas as pd
 from beartype import beartype
 from beartype.vale import Is
 
-from annoframe.basic import Schema, check_schema
+from annodize.basic import Schema, check_schema
 
 has_xz = Schema({"x": int, "z": float})
 

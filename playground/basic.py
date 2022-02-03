@@ -3,8 +3,8 @@
 import numpy as np
 import pandas as pd
 
-from annoframe.basic import Schema, check_schema
-from annoframe.typing import Annotated, get_type_hints
+from annodize.basic import Schema, check_schema
+from annodize.typing import Annotated, get_type_hints
 
 has_xz = Schema({"x": int, "z": float})
 
