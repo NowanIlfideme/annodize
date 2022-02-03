@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from annodize.basic import Schema, check_schema
-from annodize.typing import Annotated, get_type_hints
+from annodize.typing_compat import Annotated, get_type_hints
 
 has_xz = Schema({"x": int, "z": float})
 

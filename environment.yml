@@ -2,7 +2,7 @@ name: annodize
 channels:
   - conda-forge
 dependencies:
-  - python=3.9
+  - python=3.10
   - pip
   # might be faster
   - pandas=1.4

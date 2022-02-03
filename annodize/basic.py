@@ -1,6 +1,6 @@
 """Basic ideas here."""
 
-from .typing import *
+from .typing_compat import *
 
 P = ParamSpec("P")
 T = TypeVar("T")

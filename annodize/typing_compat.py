@@ -4,8 +4,6 @@ Farily obvious copypasta from:
 https://github.com/samuelcolvin/pydantic/blob/master/pydantic/typing.py
 """
 
-# TODO: consider future-typing to get the backport?
-
 import sys
 from typing import (
     TYPE_CHECKING,
@@ -23,7 +21,7 @@ from typing import (
 )
 
 from typing_extensions import Annotated, Literal, ParamSpec
-from typingx import NoneType, isinstancex
+from typingx import NoneType, func_check, isinstancex
 
 if sys.version_info < (3, 9):
 
