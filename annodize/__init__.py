@@ -1,4 +1,4 @@
-"""Dataframe validation using PEP 593 (Python 3.9+) Annotated Types."""
+"""Python Annotations that are shockingly useful."""
 
 # TODO: Consider using typing_extensions, future-typing backports
 # https://github.com/PrettyWood/future-typing
@@ -7,4 +7,7 @@
 # https://github.com/PrettyWood/typingx
 # just set this encoding comment at the top of your scripts: # -*- coding: future_typing -*-
 
+__all__ = ["inspect", "typing", "__version__"]
+
+from .ext import inspect, typing
 from .version import __version__
