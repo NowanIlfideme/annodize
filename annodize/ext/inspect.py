@@ -27,11 +27,11 @@ from inspect import (
 from typingx import is_literal, is_newtype, is_typeddict, isinstancex, issubclassx
 from typingx.typing_compat import is_annotated
 
-# More custom checks
+from .typing import ContextManager, Type, TypeGuard
 
 
-def is_context_manager(obj) -> bool:
-    """Checks whether `cls` is a context manager object."""
+def is_context_manager(obj) -> TypeGuard[ContextManager]:
+    """Checks whether `obj` is a context manager object."""
     try:
         return (
             isinstance(obj, object)
@@ -42,7 +42,7 @@ def is_context_manager(obj) -> bool:
         return False
 
 
-def is_context_manager_class(cls) -> bool:
+def is_context_manager_class(cls) -> TypeGuard[Type[ContextManager]]:
     """Checks whether `cls` is a context manager class."""
     try:
         return (
