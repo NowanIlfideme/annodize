@@ -1,6 +1,11 @@
-"""Extended `inspect` module."""
+"""Extended `inspect` module (not everything is re-exported)."""
 
 from inspect import (
+    BoundArguments,
+    FullArgSpec,
+    Signature,
+    get_annotations,
+    getfullargspec,
     isabstract,
     isasyncgen,
     isasyncgenfunction,
@@ -22,12 +27,15 @@ from inspect import (
     ismodule,
     isroutine,
     istraceback,
+    signature,
 )
 
 from typingx import is_literal, is_newtype, is_typeddict, isinstancex, issubclassx
 from typingx.typing_compat import is_annotated
 
 from .typing import ContextManager, Type, TypeGuard
+
+# ... and loads more in `inspect`
 
 
 def is_context_manager(obj) -> TypeGuard[ContextManager]:

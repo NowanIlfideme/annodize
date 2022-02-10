@@ -68,6 +68,7 @@ from typing import (
     Union,
     ValuesView,
     cast,
+    final,
     no_type_check,
     overload,
     runtime_checkable,
