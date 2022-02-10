@@ -3,30 +3,22 @@ default_language_version:
   python: python3.9
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: "v2.3.0"
     hooks:
+      - id: trailing-whitespace
       - id: check-yaml
       - id: check-toml
       - id: end-of-file-fixer
       - id: detect-private-key
-  - repo: https://github.com/psf/black
-    rev: "21.12b0"
-    hooks:
-      - id: black
   - repo: https://github.com/pycqa/isort
     rev: "5.10.1"
     hooks:
       - id: isort
         name: isort (python)
-        args:
-          [
-            "--profile",
-            "black",
-            "--filter-files",
-            "--skip-gitignore",
-            "--line-length",
-            "88",
-          ]
+  - repo: https://github.com/psf/black
+    rev: "21.12b0"
+    hooks:
+      - id: black
   - repo: https://github.com/pycqa/flake8
     # docs: https://flake8.pycqa.org/en/latest/user/using-hooks.html?highlight=commit
     rev: "4.0.1"
@@ -36,7 +28,9 @@ repos:
     rev: "v0.931"
     hooks:
       - id: mypy
-        args: [--no-strict-optional, --ignore-missing-imports]
+        pass_filenames: false
+        args:
+          [--config-file, pyproject.toml, -p, cpfr, --ignore-missing-imports]
   # SEE: https://pre-commit.com/#repository-local-hooks
   # - repo: local
   #   hooks:
