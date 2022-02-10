@@ -1,3 +1,9 @@
-# annodize: Dataframe validation using Annotations
+# Annodize: Python Annotations that are shockingly useful
 
-Dataframe validation using PEP 593 (Python 3.9+) Annotated Types
+Using PEP 593 (Python 3.9+) Annotated Types for good... or for evil.
+
+## Example uses
+
+- Data type conversion.
+- Dataframe validation.
+- (Your use case here!)
