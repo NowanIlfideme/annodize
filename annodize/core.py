@@ -1,12 +1,19 @@
 """Core objects for ."""
 
-from typing import Annotated, Any, Callable, Iterable, ParamSpec, TypeVar
+from typing import Annotated, Any, Callable, Generic, Iterable, ParamSpec, TypeVar, cast
 
-P = ParamSpec("P")  # args and kwargs
-RT = TypeVar("RT")  # return type
+from makefun import wraps
+
+# Parameter spec
+P_ORIGINAL = ParamSpec("P_ORIGINAL")
+P_HOOKED = ParamSpec("P_HOOKED")
+
+# Return type
+RT_ORIGINAL = TypeVar("RT_ORIGINAL")
+RT_HOOKED = TypeVar("RT_HOOKED")
 
 
-class BaseHook(object):
+class BaseHook(Generic[P_ORIGINAL, RT_ORIGINAL, P_HOOKED, RT_HOOKED]):
     """Base hook for working with annotations."""
 
     def __init_subclass__(cls) -> None:
@@ -34,16 +41,14 @@ class BaseHook(object):
     def enabled(self, v):
         self._enabled = bool(v)
 
-    def __call__(self, func: Callable[P, RT]) -> Callable[P, RT]:
-        """Applies this hook to the called function.
-
-        NOTE: This shouldn't change the function's signature.
-        This requirement might be removed in the future...
-        """
-        return func
+    def __call__(
+        self, func: Callable[P_ORIGINAL, RT_ORIGINAL]
+    ) -> Callable[P_HOOKED, RT_HOOKED]:
+        """Applies this hook to the called function. This may change the signature."""
+        return cast(Callable[P_HOOKED, RT_HOOKED], func)
 
     @classmethod
-    def deep_inspect(cls, func: Callable[P, RT]):
+    def deep_inspect(cls, func: Callable[P_ORIGINAL, RT_ORIGINAL]):
         """Utility method that provides deep inspection of the function."""
 
         # TODO: Implement.
@@ -74,12 +79,48 @@ class CompositeHook(BaseHook):
         """The sub-hooks used by this hook."""
         return self._children
 
-    def __call__(self, func: Callable[P, RT]) -> Callable[P, RT]:
+    def __call__(
+        self, func: Callable[P_ORIGINAL, RT_ORIGINAL]
+    ) -> Callable[P_HOOKED, RT_HOOKED]:
         """Applies all children hooks, one after the other."""
         res = func
         for child in self.children:
             res = child(res)
-        return res
+        return cast(Callable[P_HOOKED, RT_HOOKED], res)
+
+
+class PrePostHook(BaseHook):
+    """Simple hook"""
+
+    def pre_call(
+        self, *args: P_ORIGINAL.args, **kwargs: P_ORIGINAL.kwargs
+    ) -> tuple[tuple, dict]:
+        """Does something to the arguments."""
+        return cast(tuple, args), cast(dict, kwargs)
+
+    def post_call(
+        self,
+        __return_value: RT_ORIGINAL,
+        /,
+        *args: P_ORIGINAL.args,
+        **kwargs: P_ORIGINAL.kwargs,
+    ) -> RT_HOOKED:
+        """Does something to the return value, based on the original arguments and return value."""
+        return cast(RT_HOOKED, __return_value)
+
+    def __call__(
+        self, func: Callable[P_ORIGINAL, RT_ORIGINAL]
+    ) -> Callable[P_HOOKED, RT_HOOKED]:
+        """Adds pre- and post-."""
+
+        @wraps(func)
+        def inner(*args, **kwargs):
+            new_args, new_kwargs = self.pre_call(*args, **kwargs)
+            res = func(*new_args, **new_kwargs)
+            new_res = self.post_call(res, *args, **kwargs)
+            return new_res
+
+        return inner
 
 
 def as_hook(obj: Any) -> BaseHook:

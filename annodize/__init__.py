@@ -6,8 +6,10 @@ __all__ = [
     "CompositeHook",
     "Annotated",
     "Callable",
-    "P",
-    "RT",
+    "P_ORIGINAL",
+    "P_HOOKED",
+    "RT_ORIGINAL",
+    "RT_HOOKED",
 ]
 
 # TODO: Consider using typing_extensions, future-typing backports
@@ -17,5 +19,14 @@ __all__ = [
 # https://github.com/PrettyWood/typingx
 # just set this encoding comment at the top of your scripts: # -*- coding: future_typing -*-
 
-from .core import RT, Annotated, BaseHook, Callable, CompositeHook, P
+from .core import (
+    P_HOOKED,
+    P_ORIGINAL,
+    RT_HOOKED,
+    RT_ORIGINAL,
+    Annotated,
+    BaseHook,
+    Callable,
+    CompositeHook,
+)
 from .version import __version__
