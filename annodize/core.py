@@ -1,12 +1,12 @@
 """Core objects for ."""
 
-from typing import Any, Callable, Iterable, ParamSpec, TypeVar
+from typing import Annotated, Any, Callable, Iterable, ParamSpec, TypeVar
 
 P = ParamSpec("P")  # args and kwargs
 RT = TypeVar("RT")  # return type
 
 
-class AnnoHook(object):
+class BaseHook(object):
     """Base hook for working with annotations."""
 
     def __init_subclass__(cls) -> None:
@@ -54,10 +54,10 @@ class AnnoHook(object):
         return CompositeHook(children)
 
 
-class CompositeHook(AnnoHook):
+class CompositeHook(BaseHook):
     """A hook that consists of several sub-hooks, to be invoked in succession."""
 
-    def __init__(self, children: Iterable[AnnoHook], *, enabled: bool = True):
+    def __init__(self, children: Iterable[BaseHook], *, enabled: bool = True):
         self._children = tuple(children)
         super().__init__(enabled=enabled)
 
@@ -70,7 +70,7 @@ class CompositeHook(AnnoHook):
         return f"{cn}({', '.join(args)})"
 
     @property
-    def children(self) -> tuple[AnnoHook, ...]:
+    def children(self) -> tuple[BaseHook, ...]:
         """The sub-hooks used by this hook."""
         return self._children
 
@@ -82,17 +82,17 @@ class CompositeHook(AnnoHook):
         return res
 
 
-def as_hook(obj: Any) -> AnnoHook:
+def as_hook(obj: Any) -> BaseHook:
     """Converts the passed object to a hook, if possible."""
-    if isinstance(obj, AnnoHook):
+    if isinstance(obj, BaseHook):
         return obj
     raise NotImplementedError(f"`as_hook()` not implemented for {obj!r}")
 
 
-def _flatten_hook(obj: Any) -> tuple[AnnoHook, ...]:
+def _flatten_hook(obj: Any) -> tuple[BaseHook, ...]:
     """Converts the passed object into a tuple of 1+ hooks."""
     if isinstance(obj, CompositeHook):
         return tuple(obj.children)
-    if isinstance(obj, AnnoHook):
+    if isinstance(obj, BaseHook):
         return (obj,)
     return _flatten_hook(as_hook(obj))
