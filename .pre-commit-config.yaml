@@ -30,7 +30,13 @@ repos:
       - id: mypy
         pass_filenames: false
         args:
-          [--config-file, pyproject.toml, -p, cpfr, --ignore-missing-imports]
+          [
+            --config-file,
+            pyproject.toml,
+            -p,
+            annodize,
+            --ignore-missing-imports,
+          ]
   # SEE: https://pre-commit.com/#repository-local-hooks
   # - repo: local
   #   hooks:
