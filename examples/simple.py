@@ -19,3 +19,8 @@ def foo(
 ) -> Annotated[pd.DataFrame, "bar"]:
     """Example function that is wrapped."""
     return x.assign(**{"bar": x["foo"] * val})
+
+
+df = pd.DataFrame({"foo": [1, 2, 3]})
+res = foo(df)
+res
