@@ -115,4 +115,44 @@ def eval_type(x, globalns, localns, recursive_guard=frozenset()):
     """
     from typing import _eval_type
 
+    if isinstance(x, ForwardRef):
+        x = evaluate_forwardref(x, globalns, localns)
+
     return _eval_type(x, globalns, localns, recursive_guard=recursive_guard)
+
+
+def resolve_annotations(
+    raw_annotations: Dict[str, Type[Any]], module_name: Optional[str]
+) -> Dict[str, Type[Any]]:
+    """Taken from Pydantic, which took partially from typing.get_type_hints.
+
+    Resolve string or ForwardRef annotations into type objects if possible.
+    """
+    base_globals: Optional[Dict[str, Any]] = None
+    if module_name:
+        try:
+            module = sys.modules[module_name]
+        except KeyError:
+            # happens occasionally, see https://github.com/samuelcolvin/pydantic/issues/2363
+            pass
+        else:
+            base_globals = module.__dict__
+
+    annotations = {}
+    for name, value in raw_annotations.items():
+        if isinstance(value, str):
+            if (3, 10) > sys.version_info >= (3, 9, 8) or sys.version_info >= (
+                3,
+                10,
+                1,
+            ):
+                value = ForwardRef(value, is_argument=False, is_class=True)
+            else:
+                value = ForwardRef(value, is_argument=False)
+        try:
+            value = eval_type(value, base_globals, None)
+        except NameError:
+            # this is ok, it can be fixed with update_forward_refs
+            pass
+        annotations[name] = value
+    return annotations
