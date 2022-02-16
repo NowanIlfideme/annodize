@@ -11,7 +11,7 @@ def repr_type_aware(x: Any) -> str:
     if isinstance(x, type):
         res = x.__qualname__
         # TODO: Do we want to always add the module?...
-        if hasattr(x, "__module__"):
+        if False and hasattr(x, "__module__"):
             res = x.__module__ + "." + res
         return res
     else:

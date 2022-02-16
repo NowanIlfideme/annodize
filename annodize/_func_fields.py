@@ -18,6 +18,11 @@ class FunctionFields(object):
         The `Field` corresponding to the result, with `name` set to the function's name.
     signature : Signature
         The `inspect.Signature` of the function.
+
+    TODO
+    ----
+    Possibly allow multiple outputs via `tuple[Annotated[type1, ann1], Annotated[type2, ann2]]`?
+    Or do we need Fields within Fields?...
     """
 
     __slots__ = ("__input_fields", "__output_field", "__signature")
