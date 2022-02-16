@@ -17,6 +17,9 @@ from typing import (
 TypeLike = type | ForwardRef
 
 
+FIELD_REGEX = R"\R"
+
+
 @final
 class _NoDefault:
     """No default value is set."""
@@ -27,10 +30,11 @@ def as_field_name(x: str) -> str:
     assert isinstance(x, str)
     x = str(x)
     assert type(x) is str
-    assert not iskeyword(x)
+    assert not iskeyword(x)  # maybe relax this requirement? "return" would be nice...
     if issoftkeyword(x):
         # e.g. "_", "case", "match"
         warnings.warn(f"{x!r} is a soft keyword, reconsider using it.")
+    assert x.isidentifier()
     return x
 
 
@@ -224,6 +228,7 @@ class FunctionFields(object):
         """Gets a set of fields from a callable."""
         out_name = func.__name__
         # NOTE: out_name = "return" will currently raise an exception!
+        # Maybe out_name = func.__qualname__ is better, though it isn't "allowed" right now.
         sig = Signature.from_callable(func)
         input_fields = tuple(
             Field.from_inspect_parameter(param) for param in sig.parameters.values()
@@ -233,9 +238,8 @@ class FunctionFields(object):
 
 
 if __name__ == "__main__":
-    import pandas as pd
 
-    def f(df: pd.DataFrame) -> Annotated[pd.DataFrame, "schema-here"]:
+    def f(df: str) -> Annotated[str, "schema-here"]:
         return df
 
     ff = FunctionFields.from_callable(f)
