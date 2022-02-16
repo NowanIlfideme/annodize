@@ -1,9 +1,18 @@
 """Field implementation."""
 
 import warnings
-from inspect import Parameter, isclass
+from inspect import Parameter, Signature
 from keyword import iskeyword, issoftkeyword
-from typing import Annotated, Any, ForwardRef, TypeGuard, final, get_args, get_origin
+from typing import (
+    Annotated,
+    Any,
+    Callable,
+    ForwardRef,
+    Sequence,
+    final,
+    get_args,
+    get_origin,
+)
 
 TypeLike = type | ForwardRef
 
@@ -48,12 +57,42 @@ def enforce_type(type_: TypeLike | str) -> TypeLike:
     return type_
 
 
+# TODO: Move repr_* functions into a separate module, and have a smart function "just work"
+
+
 def repr_type_aware(x: Any) -> str:
     """Clean(er) representation of the type."""
     if isinstance(x, type):
-        return x.__qualname__
+        res = x.__qualname__
+        # TODO: Do we want to always add the module?...
+        if hasattr(x, "__module__"):
+            res = x.__module__ + "." + res
+        return res
     else:
         return repr(x)
+
+
+def repr_sig(x: Signature | Parameter) -> str:
+    """Proper repr for a Signature or Parameter."""
+    cn = type(x).__qualname__
+    parts: list[str] = []
+    if isinstance(x, Signature):
+        if len(x.parameters) > 0:
+            par_reprs = [repr_sig(p) for p in x.parameters.values()]
+            parts.append("[" + ", ".join(par_reprs) + "]")
+        if x.return_annotation is not x.empty:
+            parts.append("return_annotation=" + repr_type_aware(x.return_annotation))
+    elif isinstance(x, Parameter):
+        parts.append(repr(x.name))
+        kind_name = [k for k, v in Parameter.__dict__.items() if v == x.kind][0]
+        parts.append(f"Parameter.{kind_name}")
+        if x.default is not x.empty:
+            parts.append("default=" + repr_type_aware(x.default))
+        if x.annotation is not x.empty:
+            parts.append("annotation=" + repr_type_aware(x.annotation))
+    else:
+        raise TypeError(f"Bad type {type(x)} passed: {x!r}")
+    return f"{cn}({', '.join(parts)})"
 
 
 @final
@@ -142,3 +181,61 @@ class Field(object):
         return self.__default is not _NoDefault
 
     # TODO: some way to 'finalize' ForwardRef, similar to how Pydantic does it
+
+
+class FunctionFields(object):
+    """A set of fields for a function/callable."""
+
+    __slots__ = ("__input_fields", "__output_field", "__signature")
+
+    def __init__(
+        self, input_fields: Sequence[Field], output_field: Field, signature: Signature
+    ):
+        i_flds = tuple(input_fields)
+        assert all(isinstance(x, Field) for x in i_flds)
+        assert isinstance(output_field, Field)
+        self.__input_fields = i_flds
+        self.__output_field = output_field
+        self.__signature = signature
+
+    def __repr__(self) -> str:
+        cn = type(self).__qualname__
+        xargs: list[str] = [
+            repr(self.__input_fields),
+            repr(self.__output_field),
+            repr_sig(self.__signature),
+        ]
+        return cn + "(" + ", ".join(xargs) + ")"
+
+    @property
+    def signature(self) -> Signature:
+        return self.__signature
+
+    @property
+    def input_fields(self) -> tuple[Field, ...]:
+        return tuple(self.__input_fields)
+
+    @property
+    def output_field(self) -> Field:
+        return self.__output_field
+
+    @classmethod
+    def from_callable(cls, func: Callable) -> "FunctionFields":
+        """Gets a set of fields from a callable."""
+        out_name = func.__name__
+        # NOTE: out_name = "return" will currently raise an exception!
+        sig = Signature.from_callable(func)
+        input_fields = tuple(
+            Field.from_inspect_parameter(param) for param in sig.parameters.values()
+        )
+        output_field = Field(out_name, sig.return_annotation)
+        return cls(input_fields, output_field, sig)
+
+
+if __name__ == "__main__":
+    import pandas as pd
+
+    def f(df: pd.DataFrame) -> Annotated[pd.DataFrame, "schema-here"]:
+        return df
+
+    ff = FunctionFields.from_callable(f)
