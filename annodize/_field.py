@@ -1,7 +1,7 @@
 """Field implementation."""
 
 import warnings
-from inspect import Parameter, Signature
+from inspect import Parameter, Signature, isclass
 from keyword import iskeyword, issoftkeyword
 from typing import (
     Annotated,
@@ -101,7 +101,21 @@ def repr_sig(x: Signature | Parameter) -> str:
 
 @final
 class Field(object):
-    """Basic field definition."""
+    """Represents a field. All attributes are read-only.
+
+    Attributes
+    ----------
+    name : str
+        The name of the field.
+    type_
+        The type of the field. If passed as `Annotated[type_, arg1, arg2]`,
+        this field will be only the `type_` part.
+    ann_args : tuple
+        Annotation arguments. This is the empty tuple if not `Annotated`.
+    default : NoDefault or Any
+        The default value. If there's no default, we use the sentinel NoDefault.
+        (This is similar to `inspect._empty`, we just use a different sentinel.)
+    """
 
     NoDefault = _NoDefault
     __slots__ = ("__name", "__type_", "__ann_args", "__default")
@@ -188,7 +202,17 @@ class Field(object):
 
 
 class FunctionFields(object):
-    """A set of fields for a function/callable."""
+    """A set of fields for a function/callable. All attributes are read-only.
+
+    Attributes
+    ----------
+    input_fields : tuple[Field, ...]
+        The `Field` objects corresponding to the arguments.
+    output_field : Field
+        The `Field` corresponding to the result, with `name` set to the function's name.
+    signature : Signature
+        The `inspect.Signature` of the function.
+    """
 
     __slots__ = ("__input_fields", "__output_field", "__signature")
 
@@ -213,19 +237,23 @@ class FunctionFields(object):
 
     @property
     def signature(self) -> Signature:
+        """The function's signature."""
         return self.__signature
 
     @property
     def input_fields(self) -> tuple[Field, ...]:
+        """The fields for the input values (arguments)."""
         return tuple(self.__input_fields)
 
     @property
     def output_field(self) -> Field:
+        """The field for the return value, named after the function."""
         return self.__output_field
 
     @classmethod
     def from_callable(cls, func: Callable) -> "FunctionFields":
         """Gets a set of fields from a callable."""
+        assert callable(func)
         out_name = func.__name__
         # NOTE: out_name = "return" will currently raise an exception!
         # Maybe out_name = func.__qualname__ is better, though it isn't "allowed" right now.
@@ -237,9 +265,36 @@ class FunctionFields(object):
         return cls(input_fields, output_field, sig)
 
 
+class ClassFields(object):
+    """A set of fields for a class/type."""
+
+    __slots__ = ("__fields",)
+
+    def __init__(self, fields: Sequence[Field]):
+        flds = tuple(fields)
+        assert all(isinstance(x, Field) for x in flds)
+        self.__fields = flds
+
+    def __repr__(self) -> str:
+        cn = type(self).__qualname__
+        return f"{cn}({list(self.fields)!r})"
+
+    @property
+    def fields(self) -> tuple[Field, ...]:
+        """The fields of this class."""
+        return tuple(self.__fields)
+
+    @classmethod
+    def from_class(__cls__, cls: type) -> "ClassFields":
+        """Gets a set of fields from a class."""
+        assert isclass(cls)
+        # TODO: Implement!
+        raise NotImplementedError("TODO")
+
+
 if __name__ == "__main__":
 
-    def f(df: str) -> Annotated[str, "schema-here"]:
+    def func(df: str) -> Annotated[str, "schema-here"]:
         return df
 
-    ff = FunctionFields.from_callable(f)
+    ff = FunctionFields.from_callable(func)
