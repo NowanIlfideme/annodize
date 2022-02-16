@@ -7,10 +7,7 @@ from typing import Annotated, Any, ForwardRef, final, get_args, get_origin
 
 from ._repr import repr_type_aware
 
-TypeLike = type | ForwardRef
-
-
-FIELD_REGEX = R"\R"
+TypeLike = type | ForwardRef  # FIXME
 
 
 @final
