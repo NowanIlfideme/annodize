@@ -82,7 +82,7 @@ def check_schemas(func: Callable[P, RT]) -> Callable[P, RT]:
 
     # Output schema
     # FIXME: Allow multiple outputs, maybe?
-    output_schema: type[Schema] = _filter_schemas(ff.output_field)
+    output_schema: type[Schema] | None = _filter_schemas(ff.output_field)
 
     # Signature
     sig = ff.signature
@@ -108,34 +108,53 @@ def check_schemas(func: Callable[P, RT]) -> Callable[P, RT]:
         res_orig = func(*bound_upd.args, **bound_upd.kwargs)
 
         # Check the output
-        res_upd = output_schema.validate(res_orig)
+        if output_schema is None:
+            res_upd = res_orig
+        else:
+            res_upd = output_schema.validate(res_orig)
         return res_upd
 
     return inner
 
 
+# ANOTHER LIBRARY
+
+Input = lambda x: x
+Output = lambda x: x
+
+
+class JobGraph:
+    def register(self, func):
+        return func
+
+
+job_graph = JobGraph()
+
+
 # User interface
 
 
-class InputSchema(Schema):
+class SchemaA(Schema):
     """My input dataframe schema."""
 
     x: float
     y: float
 
 
-class OutputSchema(Schema):
+class SchemaB(Schema):
     """My output dataframe schema."""
 
-    x: float
+    x: Annotated[float, "checkme"]
     y: float
     z: float
 
 
+@job_graph.register
 @check_schemas
 def func(
-    df: Annotated[pd.DataFrame, InputSchema], mult: float = 1
-) -> Annotated[pd.DataFrame, OutputSchema]:
+    df: Annotated[pd.DataFrame, SchemaA, Input("foo")],
+    mult: Annotated[float, Input("bar")] = 1,
+) -> Annotated[pd.DataFrame, SchemaB, Output("baz")]:
     """Function that transforms dataframes."""
     return df.assign(z=df["x"] + mult * df["y"])
 
