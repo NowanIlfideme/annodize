@@ -1,4 +1,4 @@
-# Environment used for local development and building docs
+# Environment used for local development
 name: annodize
 channels:
   - conda-forge
