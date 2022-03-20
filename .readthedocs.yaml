@@ -9,14 +9,5 @@ mkdocs:
   configuration: mkdocs.yml
   fail_on_warning: false
 
-python:
-  version: "3.9" # FIXME: 3.9 not accepted yet! Use conda instead? e.g. "miniconda3-4.7"
-  install:
-    # We are using "pip" to install
-    - method: pip
-      path: .
-      extra_requirements:
-        - dev
-        - docs
-        - pandas
-        - pyspark
+conda:
+  environment: environment.yml
