@@ -11,4 +11,4 @@ dependencies:
   # for examples?
   - jupyter
   - pip:
-      - "-e .[dev,pandas,pyspark,docs]"
+      - "-e .[dev,task,pandas,pyspark,docs]"
