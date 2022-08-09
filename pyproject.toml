@@ -27,5 +27,9 @@ warn_unused_configs = true
 [[tool.mypy.overrides]]
 module = 'annodize.*'
 
+[[tool.mypy.overrides]]
+module = 'fsspec.*'
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 testpaths = ["annodize"]
