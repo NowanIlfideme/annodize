@@ -2,6 +2,6 @@
 
 __all__ = ["Field", "FunctionFields", "NamespaceFields"]
 
-from ._field import Field
-from ._func_fields import FunctionFields
-from ._nsp_fields import NamespaceFields
+from .internals._field import Field
+from .internals._func_fields import FunctionFields
+from .internals._nsp_fields import NamespaceFields
