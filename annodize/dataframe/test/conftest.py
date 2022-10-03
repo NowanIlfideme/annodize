@@ -4,7 +4,7 @@ from typing import Annotated, Optional
 
 from annodize.dataframe.example import ColMajorDF, RowMajorDF, col_to_row
 from annodize.dataframe.field_types import Nullable
-from annodize.dataframe.schema import Schema
+from annodize.dataframe.schema import DF, DFValidationError, Schema, global_check
 
 
 class ExSchema1(Schema):
@@ -15,6 +15,10 @@ class ExSchema1(Schema):
     b: str
     c: Optional[str]  # field is optional, but not nullable!
 
+    @global_check
+    def always_succeeds(cls, df: DF) -> DFValidationError | None:
+        """Global check that always succeeds."""
+
 
 class ExSchema2(Schema):
     """Example schema 2."""
@@ -22,6 +26,11 @@ class ExSchema2(Schema):
     a1: str
     a2: str
     # check if extras
+
+    @global_check
+    def always_fails(cls, df: DF) -> DFValidationError | None:
+        """Global check that always fails."""
+        return DFValidationError()
 
 
 df_col: ColMajorDF = {
