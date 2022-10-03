@@ -7,7 +7,7 @@ name = "annodize"
 description = "Making Python annotations shockingly useful"
 readme = "README.md"
 requires-python = ">=3.10"
-dynamic = ["version"]
+dynamic = ["version", "entry-points"]
 keywords = ["typing", "annotated"]
 authors = [{ name = "Anatoly Makarevich", email = "git@nowan.dev" }]
 license = { file = "LICENSE" }
@@ -45,9 +45,11 @@ docs = [
 zip-safe = false
 package-dir = { "" = "." }
 packages = ["annodize"]
+include-package-data = true
 
 [tool.setuptools.dynamic]
 version = { attr = "annodize.version.__version__" }
+entry-points = { file = "entry_points.ini" }
 
 [tool.black]
 line-length = 88

@@ -1,6 +1,6 @@
 """Implementation examples of checks on built-in 'dataframe' types."""
 
-__all__ = ["ColMajorDF", "RowMajorDF"]
+__all__ = ["ColMajorDF", "RowMajorDF", "col_to_row", "row_to_col"]
 
 from .col_major import ColMajorDF
 from .row_major import RowMajorDF

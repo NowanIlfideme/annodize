@@ -1,19 +1,26 @@
 """Defining a (possibly recursive) schema."""
 
 
-from typing import Annotated, TypeVar, no_type_check
+from typing import TypeVar
 
-K = TypeVar("K")
+DF = TypeVar("DF")  # A generic dataframe type
+
+
+class DFValidationError(ValueError):
+    """Dataframe validation failed."""
 
 
 class Schema:
     """Dataframe schema definition."""
 
+    @classmethod
+    def validate(cls, df: DF) -> DFValidationError | None:
+        """Validates the dataframe."""
 
-class Nullable:
-    """A field marked as nullable."""
+    @classmethod
+    def enforce(cls, df: DF) -> None:
+        """Enforces the dataframe to"""
 
-    @no_type_check
-    def __class_getitem__(self, typ: type[K], *others) -> Annotated[K, "Nullable"]:
-        """Shortcut for `Annotated[typ, Nullable, *others]`."""
-        return Annotated[(typ, Nullable, *others)]
+    @classmethod
+    def coerce(cls, df: DF) -> DF:
+        """Coerces the dataframe into the schema, if possible."""

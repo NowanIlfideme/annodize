@@ -3,7 +3,8 @@
 from typing import Annotated, Optional
 
 from annodize.dataframe.example import ColMajorDF, RowMajorDF, col_to_row
-from annodize.dataframe.schema import Nullable, Schema
+from annodize.dataframe.field_types import Nullable
+from annodize.dataframe.schema import Schema
 
 
 class ExSchema1(Schema):
