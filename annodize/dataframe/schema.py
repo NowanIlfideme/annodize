@@ -1,5 +1,7 @@
 """Defining a (possibly recursive) schema."""
 
+from __future__ import annotations
+
 from typing import Any, Callable, TypeVar
 
 DF = TypeVar("DF")
@@ -81,7 +83,7 @@ class Schema:
     """
 
     @classmethod
-    def validate(cls, df: DF) -> "DFValidationError" | None:
+    def validate(cls, df: DF) -> DFValidationError | None:
         """Validates the dataframe, returning errors."""
         from .api import plugin_manager
 
