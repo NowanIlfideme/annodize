@@ -1,6 +1,5 @@
-"""Python Annotations that are shockingly useful."""
+"""Making Python annotations shockingly useful."""
 
-__all__ = ["__version__", "Field", "FunctionFields", "NamespaceFields"]
+__all__ = ["__version__"]
 
-from .field import Field, FunctionFields, NamespaceFields
 from .version import __version__

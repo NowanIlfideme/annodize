@@ -5,10 +5,7 @@ channels:
 dependencies:
   - python=3.10
   - pip
-  # might be faster
-  - pandas=1.4
-  - pyspark=3.2
-  # for examples?
+  # for examples
   - jupyter
   - pip:
-      - "-e .[dev,task,pandas,pyspark,docs]"
+      - "-e .[dev,docs]"
