@@ -3,6 +3,7 @@
 from typing import Any, TypeGuard
 
 from annodize.dataframe.ann import DF
+from annodize.dataframe.plugin_loader import PluginManager
 
 ColMajorDF = dict[str, list[Any]]
 
@@ -20,3 +21,8 @@ def is_col_major(df: DF) -> TypeGuard[ColMajorDF]:
     except Exception:
         pass
     return False
+
+
+def register_plugin(mgr: PluginManager, plugin_name: str):
+    """Column-major plugin entry point."""
+    mgr.register_instance_check(is_col_major, plugin_name=plugin_name)
