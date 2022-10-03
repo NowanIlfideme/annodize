@@ -22,7 +22,7 @@ def is_row_major(df: DF) -> TypeGuard[RowMajorDF]:
     return False
 
 
-def check_schema(schema: Schema, df: RowMajorDF) -> DFValidationError | None:
+def check_schema(schema: type[Schema], df: RowMajorDF) -> DFValidationError | None:
     """Schema checker for row-major 'dataframes'."""
     # TODO: Implement
 

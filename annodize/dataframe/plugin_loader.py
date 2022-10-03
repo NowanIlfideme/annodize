@@ -4,12 +4,9 @@ import importlib.metadata as _im
 import logging
 from typing import Callable
 
-from annodize.dataframe.schema import DF, DFValidationError, Schema
+from annodize.dataframe.schema import DF, InstanceCheck, SchemaCheck
 
 logger = logging.getLogger(__name__)
-
-InstanceCheck = Callable[[DF], bool]
-SchemaCheck = Callable[[Schema, DF], DFValidationError | None]
 
 
 class PluginManager:
@@ -36,6 +33,7 @@ class PluginManager:
 
     def register_instance_check(self, func: InstanceCheck, plugin_name: str):
         """Registers `func` as an instance check for your plugin's dataframe type."""
+        # TODO: inspect whether func is a valid InstanceCheck
         self.__instance_checks.append((func, plugin_name))
 
     def get_plugin_for(self, df: DF) -> str:
@@ -50,9 +48,18 @@ class PluginManager:
 
     def register_schema_check(self, func: SchemaCheck, plugin_name: str):
         """Registers `func` as the schema checker for your plugin."""
+        # TODO: inspect whether func is a valid SchemaCheck
         if plugin_name in self.__schema_checks.keys():
             logger.warning(f"Schema checker already exists for plugin {plugin_name!r}")
         self.__schema_checks[plugin_name] = func
+
+    def get_checker_for(self, df: DF) -> SchemaCheck:
+        """Gets the schema check function for a dataframe type."""
+        plg = self.get_plugin_for(df)
+        chk = self.__schema_checks.get(plg)
+        if chk is None:
+            raise TypeError(f"No schema check defined for plugin {plg!r}")
+        return chk
 
 
 if __name__ == "__main__":

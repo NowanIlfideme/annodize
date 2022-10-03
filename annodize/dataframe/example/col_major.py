@@ -23,7 +23,7 @@ def is_col_major(df: DF) -> TypeGuard[ColMajorDF]:
     return False
 
 
-def check_schema(schema: Schema, df: ColMajorDF) -> DFValidationError | None:
+def check_schema(schema: type[Schema], df: ColMajorDF) -> DFValidationError | None:
     """Schema checker for column-major 'dataframes'."""
     # TODO: Implement
 
