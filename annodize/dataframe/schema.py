@@ -9,7 +9,7 @@ DF = TypeVar("DF")
 class Field:
     """Dataframe field definition."""
 
-    __slots__ = "__name", "__type", "__default", "__extra_annotations"
+    __slots__ = "__name", "__type", "__default", "__checks", "__extra_annotations"
 
     NO_DEFAULT = ...
 
@@ -18,12 +18,13 @@ class Field:
         name: str,
         type_: type,
         default: Any = NO_DEFAULT,
-        extra_annotations: list[Any] = [],
+        annotations: list[Any] = [],
     ):
         self.__name = name
         self.__type = type_
         self.__default = default
-        self.__extra_annotations = list(extra_annotations)
+        self.__checks: list = []  # TODO:
+        self.__extra_annotations = list(annotations)
 
     @classmethod
     def from_annotation(cls, ann: str | Any) -> "Field":
@@ -47,12 +48,37 @@ class Field:
         return self.__default
 
     @property
+    def checks(self) -> list:
+        """Checks identified from annotations."""
+        return list(self.__checks)
+
+    @property
     def extra_annotations(self) -> list[Any]:
+        """Any annotations not identified as checks."""
         return list(self.__extra_annotations)
 
 
+class GlobalCheck:
+    """Global dataframe check."""
+
+
+class SchemaSpecificGlobalCheck(GlobalCheck):
+    """Schema-specific global check."""
+
+    def __init__(self, func: "SchemaCheck"):
+        self.__func = func
+
+
+def global_check(func: "SchemaCheck") -> SchemaSpecificGlobalCheck:
+    """Registers this function as a schema-specific global check."""
+    return SchemaSpecificGlobalCheck(func)
+
+
 class Schema:
-    """Dataframe schema definition."""
+    """Dataframe schema definition.
+
+    TODO: Probably needs a metaclass or something.
+    """
 
     @classmethod
     def validate(cls, df: DF) -> "DFValidationError" | None:
@@ -84,6 +110,11 @@ class Schema:
     @classmethod
     def fields(cls) -> list[Field]:
         """Returns all the fields of this class."""
+        raise NotImplementedError("TODO.")
+
+    @classmethod
+    def global_checks(cls) -> list[GlobalCheck]:
+        """Returns all global checks of this class."""
         raise NotImplementedError("TODO.")
 
 
