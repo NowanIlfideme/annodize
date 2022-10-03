@@ -1,14 +1,53 @@
 [build-system]
-requires = ["setuptools >= 45", "wheel"]
+requires = ["setuptools >= 61"]
 build-backend = "setuptools.build_meta"
 
-[tool.isort]
-profile = "black"
-line_length = 88
-py_version = 310
-known_first_party = ["annodize"]
-src_paths = ["annodize"]
-skip_gitignore = true
+[project]
+name = "annodize"
+description = "Making Python annotations shockingly useful"
+readme = "README.md"
+requires-python = ">=3.10"
+dynamic = ["version"]
+keywords = ["typing", "annotated"]
+authors = [{ name = "Anatoly Makarevich", email = "git@nowan.dev" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = ["annotated-types"]
+urls = { "git" = "https://github.com/NowanIlfideme/annodize/" }
+
+[project.optional-dependencies]
+dev = [
+    "setuptools>=61.0.0",
+    "pre-commit>=2.20.0",
+    "black>=22.6.0",
+    "flake8>=5.0.4",
+    "flake8-pyproject>=1.1.0",
+    "mypy>=0.971",
+    "pytest>=7.1.2",
+    "isort>=5.10.1",
+]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings",
+    "pymdown-extensions",
+    "pygments",
+]
+
+[tool.setuptools]
+zip-safe = false
+package-dir = { "" = "." }
+packages = ["annodize"]
+
+[tool.setuptools.dynamic]
+version = { attr = "annodize.version.__version__" }
 
 [tool.black]
 line-length = 88
@@ -19,6 +58,23 @@ extend-exclude = '''
 |^/dist
 '''
 
+[tool.isort]
+profile = "black"
+line_length = 88
+py_version = 310
+known_first_party = ["annodize"]
+src_paths = ["annodize"]
+skip_gitignore = true
+
+[tool.flake8]
+ignore = ['E203', 'E231']
+include = ['annodize']
+exclude = ['.git']
+max-line-length = 88
+max-doc-length = 88
+docstring-convention = "numpy"
+count = true
+
 [tool.mypy]
 python_version = "3.10"
 files = 'annodize/**/*.py'
@@ -27,9 +83,6 @@ warn_unused_configs = true
 [[tool.mypy.overrides]]
 module = 'annodize.*'
 
-[[tool.mypy.overrides]]
-module = 'fsspec.*'
-ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["annodize"]
