@@ -3,7 +3,7 @@
 
 import pytest
 
-from annodize.dataframe.ann import DF
+from annodize.dataframe.schema import DF
 from annodize.dataframe.test.conftest import ExSchema1, df_col, df_row
 
 

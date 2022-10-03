@@ -2,8 +2,8 @@
 
 from typing import Any, TypeGuard
 
-from annodize.dataframe.ann import DF
 from annodize.dataframe.plugin_loader import PluginManager
+from annodize.dataframe.schema import DF, DFValidationError, Schema
 
 RowMajorDF = list[dict[str, Any]]
 
@@ -22,6 +22,12 @@ def is_row_major(df: DF) -> TypeGuard[RowMajorDF]:
     return False
 
 
+def check_schema(schema: Schema, df: RowMajorDF) -> DFValidationError | None:
+    """Schema checker for row-major 'dataframes'."""
+    # TODO: Implement
+
+
 def register_plugin(mgr: PluginManager, plugin_name: str):
     """Row-major plugin entry point."""
     mgr.register_instance_check(is_row_major, plugin_name=plugin_name)
+    mgr.register_schema_check(check_schema, plugin_name=plugin_name)
