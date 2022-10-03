@@ -19,8 +19,8 @@ jobs:
           - "3.10"
         deps:
           - dev
-          - dev,pandas
-          - dev,pyspark # consider adding pandas here too?
+          # - dev,pandas
+          # - dev,pyspark
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
