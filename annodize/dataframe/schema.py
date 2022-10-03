@@ -1,9 +1,6 @@
 """Defining a (possibly recursive) schema."""
 
-
-from typing import TypeVar
-
-DF = TypeVar("DF")  # A generic dataframe type
+from annodize.dataframe.ann import DF
 
 
 class DFValidationError(ValueError):
