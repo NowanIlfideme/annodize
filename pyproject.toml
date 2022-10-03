@@ -19,7 +19,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
-dependencies = ["annotated-types"]
+dependencies = ["annotated-types>=0.3.1"]
 urls = { "git" = "https://github.com/NowanIlfideme/annodize/" }
 
 [project.optional-dependencies]
