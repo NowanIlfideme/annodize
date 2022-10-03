@@ -25,7 +25,12 @@ def is_col_major(df: DF) -> TypeGuard[ColMajorDF]:
 
 def check_schema(schema: type[Schema], df: ColMajorDF) -> DFValidationError | None:
     """Schema checker for column-major 'dataframes'."""
-    # TODO: Implement
+    cols_df = set(df.keys())
+    cols_schema = set(schema.__annotations__)
+    if not cols_schema.issuperset(cols_df):
+        return DFValidationError()
+    # TODO: Keep implementing
+    return None
 
 
 def register_plugin(mgr: PluginManager, plugin_name: str):
